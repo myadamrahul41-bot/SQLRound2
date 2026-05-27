@@ -1,0 +1,27 @@
+with cte_total_hours as (
+SELECT date,resource_id,start_time,end_time,is_clock_in,is_clock_out,
+ ROUND(
+        IFNULL(
+            (julianday(end_time) - julianday(start_time)) * 24,
+            0
+        ),
+        2
+    ) AS effective_hours
+  from test_de
+  
+  )  
+SELECT
+    date,
+    resource_id,
+   MIN(start_time) as clock_in_time, 
+   MAX(end_time) as clock_out_time,
+    IFNULL(SUM(effective_hours), 0)  AS total_effective_hours
+
+FROM cte_total_hours
+
+GROUP BY
+    date,
+    resource_id
+    
+ 
+    
